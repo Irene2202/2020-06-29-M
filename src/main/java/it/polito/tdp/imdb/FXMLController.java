@@ -7,6 +7,8 @@ package it.polito.tdp.imdb;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import it.polito.tdp.imdb.model.Adiacente;
+import it.polito.tdp.imdb.model.Director;
 import it.polito.tdp.imdb.model.Model;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -35,10 +37,10 @@ public class FXMLController {
     private Button btnCercaAffini; // Value injected by FXMLLoader
 
     @FXML // fx:id="boxAnno"
-    private ComboBox<?> boxAnno; // Value injected by FXMLLoader
+    private ComboBox<Integer> boxAnno; // Value injected by FXMLLoader
 
     @FXML // fx:id="boxRegista"
-    private ComboBox<?> boxRegista; // Value injected by FXMLLoader
+    private ComboBox<Director> boxRegista; // Value injected by FXMLLoader
 
     @FXML // fx:id="txtAttoriCondivisi"
     private TextField txtAttoriCondivisi; // Value injected by FXMLLoader
@@ -48,12 +50,41 @@ public class FXMLController {
 
     @FXML
     void doCreaGrafo(ActionEvent event) {
-
+    	txtResult.clear();
+    	Integer anno=boxAnno.getValue();
+    	
+    	if(anno==null) {
+    		txtResult.setText("SELEZIONARE UN ANNO");
+    		return;
+    	}
+    	
+    	model.creaGrafo(anno);
+    	txtResult.appendText("Grafo creato.");
+    	txtResult.appendText("\n#vertici: "+model.getGrafo().vertexSet().size());
+    	txtResult.appendText("\n#archi: "+model.getGrafo().edgeSet().size());	
+    	
+    	boxRegista.getItems().addAll(model.getGrafo().vertexSet());
     }
 
     @FXML
     void doRegistiAdiacenti(ActionEvent event) {
-
+    	txtResult.clear();
+    	
+    	if(model.getGrafo()==null) {
+    		txtResult.setText("GRAFO NON ANCORA CREATO");
+    		return;
+    	}
+    	
+    	Director d=boxRegista.getValue();
+    	if(d==null) {
+    		txtResult.setText("SELEZIONARE UN REGISTA");
+    		return;
+    	}
+    	
+    	txtResult.setText("REGISTI ADIACENTI A: "+d.toString());
+    	for(Adiacente a: model.getRegistiAdiacenti(d)) {
+    		txtResult.appendText("\n"+a.getD()+" - #attori condivisi: "+a.getPeso());
+    	}
     }
 
     @FXML
@@ -77,6 +108,10 @@ public class FXMLController {
     	
     	this.model = model;
     	
+    	boxAnno.getItems().add(2004);
+    	boxAnno.getItems().add(2005);
+    	boxAnno.getItems().add(2006);
+
     }
     
 }
