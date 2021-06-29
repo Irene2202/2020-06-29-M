@@ -89,7 +89,37 @@ public class FXMLController {
 
     @FXML
     void doRicorsione(ActionEvent event) {
-
+    	txtResult.clear();
+    	
+    	if(model.getGrafo()==null) {
+    		txtResult.setText("GRAFO NON ANCORA CREATO");
+    		return;
+    	}
+    	
+    	Director d=boxRegista.getValue();
+    	if(d==null) {
+    		txtResult.setText("SELEZIONARE UN REGISTA");
+    		return;
+    	}
+    	
+    	String pesoMaxS=txtAttoriCondivisi.getText();
+    	int pesoMax=0;
+    	try {
+    		pesoMax=Integer.parseInt(pesoMaxS);
+    	} catch (NumberFormatException e) {
+    		txtResult.setText("INSERIRE UN NUMERO INTERO NEL CAMPO 'ATTORI CONDIVISI'");
+    		return;
+    	}
+    	
+    	txtResult.setText("Percorso massimo a partire da "+d+" di peso minore o uguale a "+pesoMax);
+    	for(Director di:model.getRegistiAffini(d, pesoMax))
+    		txtResult.appendText("\n"+di);
+    	
+    	if(model.getPesoPercorso()!=-1) {
+    		txtResult.appendText("\nPeso Totale del percorso: "+model.getPesoPercorso());
+    	} else {
+    		txtResult.appendText("\nPercorso Migliore non trovato");
+    	}
     }
 
     @FXML // This method is called by the FXMLLoader when initialization is complete
