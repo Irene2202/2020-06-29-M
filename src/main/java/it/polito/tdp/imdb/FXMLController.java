@@ -63,6 +63,7 @@ public class FXMLController {
     	txtResult.appendText("\n#vertici: "+model.getGrafo().vertexSet().size());
     	txtResult.appendText("\n#archi: "+model.getGrafo().edgeSet().size());	
     	
+    	boxRegista.getItems().clear();
     	boxRegista.getItems().addAll(model.getGrafo().vertexSet());
     }
 
